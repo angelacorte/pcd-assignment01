@@ -1,0 +1,7 @@
+target = seq.SequentialBodySimulationMain
+
+classpath = src/seq/SequentialBodySimulationMain.java
+
+listener = gov.nasa.jpf.listener.PreciseRaceDetector
+
+report.console.property_violation = error,trace
