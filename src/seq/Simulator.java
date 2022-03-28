@@ -39,45 +39,34 @@ public class Simulator {
 		long iter = 0;
 
 		/* simulation loop */
-
 		while (iter < nSteps) {
 
 			/* update bodies velocity */
-
 			for (int i = 0; i < bodies.size(); i++) {
 				Body b = bodies.get(i);
-
 				/* compute total force on bodies */
 				V2d totalForce = computeTotalForceOnBody(b);
-
 				/* compute instant acceleration */
 				V2d acc = new V2d(totalForce).scalarMul(1.0 / b.getMass());
-
 				/* update velocity */
 				b.updateVelocity(acc, dt);
 			}
 
 			/* compute bodies new pos */
-
 			for (Body b : bodies) {
 				b.updatePos(dt);
 			}
 
 			/* check collisions with boundaries */
-
 			for (Body b : bodies) {
 				b.checkAndSolveBoundaryCollision(bounds);
 			}
 
 			/* update virtual time */
-
 			vt = vt + dt;
 			iter++;
-
 			/* display current stage */
-
 			viewer.display(bodies, vt, iter, bounds);
-
 		}
 	}
 
@@ -86,7 +75,6 @@ public class Simulator {
 		V2d totalForce = new V2d(0, 0);
 
 		/* compute total repulsive force */
-
 		for (int j = 0; j < bodies.size(); j++) {
 			Body otherBody = bodies.get(j);
 			if (!b.equals(otherBody)) {
@@ -97,10 +85,8 @@ public class Simulator {
 				}
 			}
 		}
-
 		/* add friction force */
 		totalForce.sum(b.getCurrentFrictionForce());
-
 		return totalForce;
 	}
 	
