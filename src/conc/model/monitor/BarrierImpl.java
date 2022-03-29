@@ -1,4 +1,4 @@
-package barrierEx;
+package conc.model.monitor;
 
 /*
  * Barrier - to be implemented

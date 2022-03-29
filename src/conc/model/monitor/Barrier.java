@@ -1,4 +1,4 @@
-package barrierEx;
+package conc.model.monitor;
 
 public interface Barrier {
 

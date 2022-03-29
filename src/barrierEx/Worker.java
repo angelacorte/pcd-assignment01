@@ -1,5 +1,7 @@
 package barrierEx;
 
+import conc.model.monitor.Barrier;
+
 import java.util.Random;
 
 public class Worker extends Thread {

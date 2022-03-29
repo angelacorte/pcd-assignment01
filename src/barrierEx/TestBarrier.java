@@ -1,5 +1,8 @@
 package barrierEx;
 
+import conc.model.monitor.Barrier;
+import conc.model.monitor.BarrierImpl;
+
 import java.util.ArrayList;
 import java.util.List;
 
