@@ -1,6 +1,8 @@
 package conc.controller;
 
-import seq.*;
+import conc.model.*;
+import conc.model.monitor.*;
+import conc.view.SimulationView;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -21,66 +23,59 @@ public class Simulator {
 	/* virtual time step */
 	double dt;
 
+	//monitor
+	private Barrier barrier;
+
 	public Simulator(SimulationView viewer) {
 		this.viewer = viewer;
-
 		/* initializing boundary and bodies */
-
 //		 testBodySet1_two_bodies();
-//		 testBodySet2_three_bodies();
+		 testBodySet2_three_bodies();
 //		 testBodySet3_some_bodies();
-		testBodySet4_many_bodies();
+//		testBodySet4_many_bodies();
+		System.out.println("bodies " + bodies.size());
+		this.barrier = new BarrierImpl(bodies.size());
 	}
 	
-	public void execute(long nSteps) {
+	public void execute(long nSteps) throws InterruptedException {
 
 		/* init virtual time */
-
 		vt = 0;
 		dt = 0.001;
-
 		long iter = 0;
 
 		/* simulation loop */
-
 		while (iter < nSteps) {
 
 			/* update bodies velocity */
-
 			for (int i = 0; i < bodies.size(); i++) {
 				Body b = bodies.get(i);
-
 				/* compute total force on bodies */
 				V2d totalForce = computeTotalForceOnBody(b);
-
 				/* compute instant acceleration */
 				V2d acc = new V2d(totalForce).scalarMul(1.0 / b.getMass());
-
 				/* update velocity */
 				b.updateVelocity(acc, dt);
+				barrier.hitAndWaitAll();
 			}
 
 			/* compute bodies new pos */
-
 			for (Body b : bodies) {
 				b.updatePos(dt);
+				barrier.hitAndWaitAll();
 			}
 
 			/* check collisions with boundaries */
-
 			for (Body b : bodies) {
 				b.checkAndSolveBoundaryCollision(bounds);
+				barrier.hitAndWaitAll();
 			}
 
 			/* update virtual time */
-
 			vt = vt + dt;
 			iter++;
-
 			/* display current stage */
-
 			viewer.display(bodies, vt, iter, bounds);
-
 		}
 	}
 

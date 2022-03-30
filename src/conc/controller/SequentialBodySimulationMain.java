@@ -1,6 +1,5 @@
 package conc.controller;
-
-import seq.SimulationView;
+import conc.view.SimulationView;
 
 /**
  * Bodies simulation - legacy code: sequential, unstructured
@@ -9,7 +8,7 @@ import seq.SimulationView;
  */
 public class SequentialBodySimulationMain {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
                 
     	SimulationView viewer = new SimulationView(620,620);
 

@@ -5,17 +5,18 @@ package conc.model.monitor;
  */
 public class BarrierImpl implements Barrier {
 
-	private int nParticipants;
+	private int nBodies;
 	private int count = 0;
 	
-	public BarrierImpl(int nParticipants) {
-		this.nParticipants = nParticipants;
+	public BarrierImpl(int nBodies) {
+		this.nBodies = nBodies;
 	}
 	
 	@Override
 	public synchronized void hitAndWaitAll() throws InterruptedException {
 		count++;
-		while(count < nParticipants){
+		System.out.println("hit #" + count);
+		while(count < nBodies){
 			wait();
 		}
 		notify(); //notifyAll();
