@@ -23,10 +23,13 @@ public class WorkerAgent extends Thread{
 
     @Override
     public void run(){
+        System.out.println("run worker agent");
         while(true){
             Task task = tasks.nextTask();
+            log("Executing work...");
             task.executeWork();
             try {
+                log("Barrier");
                 barrier.hitAndWaitAll();
             } catch (InterruptedException e) {
                 e.printStackTrace();

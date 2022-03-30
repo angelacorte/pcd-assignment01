@@ -33,11 +33,11 @@ public class MasterAgent extends Thread{
 
     @Override
     public void run(){
+        System.out.println("run master agent");
         vt = 0;
         dt = 0.001;
         long iter = 0;
         int nTasks = bodies.size() / nWorkers;
-
         for(int i = 0; i < nWorkers; i++){
             WorkerAgent worker = new WorkerAgent(taskBag, barrier);
             workers.add(worker);
