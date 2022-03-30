@@ -8,15 +8,19 @@ import java.util.List;
 public final class ComputeAndUpdateVelocityTask implements Task{
     private final List<Body> bodies;
     private double dt;
+    private int start, finish;
     
-    public ComputeAndUpdateVelocityTask(List<Body> bodies, double dt){
+    public ComputeAndUpdateVelocityTask(List<Body> bodies, double dt, int start, int finish){
         this.bodies = bodies;
         this.dt = dt;
+        this.start = start;
+        this.finish = finish;
     }
 
     @Override
     public void executeWork() {
-        for(Body b : bodies){
+        for(int i = start; i < finish; i++){
+            Body b = bodies.get(i);
             /* compute total force on bodies */
             V2d totalForce = computeTotalForceOnBody(b);
 

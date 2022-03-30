@@ -1,12 +1,7 @@
 package conc.controller;
 
-import seq.SimulationView;
+import conc.view.SimulationView;
 
-/**
- * Bodies simulation - legacy code: sequential, unstructured
- * 
- * @author aricci
- */
 public class ConcurrentBodySimulationMain {
 
     public static void main(String[] args) {
