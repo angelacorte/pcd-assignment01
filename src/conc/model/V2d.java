@@ -9,7 +9,8 @@
  */
 package conc.model;
 
-import seq.NullVectorException;
+
+import conc.model.exc.NullVectorException;
 
 /**
  *

@@ -1,8 +1,10 @@
 package conc.view;
 
-import seq.Body;
-import seq.Boundary;
-import seq.P2d;
+
+
+import conc.model.Body;
+import conc.model.Boundary;
+import conc.model.P2d;
 
 import javax.swing.*;
 import java.awt.*;

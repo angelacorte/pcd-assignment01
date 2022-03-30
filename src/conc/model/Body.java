@@ -1,9 +1,7 @@
 package conc.model;
 
 
-import seq.InfiniteForceException;
-import seq.P2d;
-import seq.V2d;
+import conc.model.exc.InfiniteForceException;
 
 /*
  * This class represents a body

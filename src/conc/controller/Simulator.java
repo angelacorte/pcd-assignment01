@@ -1,6 +1,11 @@
 package conc.controller;
 
-import seq.*;
+
+import conc.model.Body;
+import conc.model.Boundary;
+import conc.model.P2d;
+import conc.model.V2d;
+import conc.view.SimulationView;
 
 import java.util.ArrayList;
 import java.util.Random;
