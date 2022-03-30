@@ -7,7 +7,7 @@ import seq.SimulationView;
  * 
  * @author aricci
  */
-public class SequentialBodySimulationMain {
+public class ConcurrentBodySimulationMain {
 
     public static void main(String[] args) {
                 
