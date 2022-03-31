@@ -1,6 +1,7 @@
 package conc.model.agent;
 
 import conc.model.monitor.Barrier;
+import conc.model.monitor.Latch;
 import conc.model.task.Task;
 import conc.model.task.TaskBag;
 
@@ -9,26 +10,27 @@ import conc.model.task.TaskBag;
  */
 public class WorkerAgent extends Thread{
     private final TaskBag tasks;
-    private final Barrier barrier;
+    private final Latch latch;
 
     /**
      *
      * @param tasks The tasks to execute.
      * @param barrier A {@link Barrier} used for coordination.
      */
-    public WorkerAgent(TaskBag tasks, Barrier barrier){
+    public WorkerAgent(TaskBag tasks, Latch latch){
         this.tasks = tasks;
-        this.barrier = barrier;
+        this.latch = latch;
     }
 
     @Override
     public void run(){
-        System.out.println("Running");
+        log("Running");
         while(true){
-            log("Searching for task");
+            log("Waiting for task");
             Task task = tasks.nextTask();
             log("Executing work...");
             task.executeWork();
+            latch.notifyCompletion();
         }
     }
 

@@ -33,7 +33,7 @@ public class Simulator {
 	}
 	
 	public void execute(long nSteps) {
-		int nWorkers = Runtime.getRuntime().availableProcessors();
+		int nWorkers = Runtime.getRuntime().availableProcessors()+1;
 		MasterAgent master = new MasterAgent(getBodies(), getBounds(), nSteps , nWorkers);
 		master.start();
 	}

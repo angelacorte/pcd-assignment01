@@ -9,8 +9,8 @@ import java.util.List;
 public final class CheckBoundaryTask extends BasicTask{
     private final Boundary boundary;
 
-    public CheckBoundaryTask(List<Body> bodies, Boundary boundary, int start, int finish, Barrier barrier){
-        super(bodies, barrier, start, finish);
+    public CheckBoundaryTask(List<Body> bodies, Boundary boundary, int start, int finish){
+        super(bodies, start, finish);
         this.boundary = boundary;
     }
     @Override

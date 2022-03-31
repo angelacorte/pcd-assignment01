@@ -8,8 +8,8 @@ import java.util.List;
 public final class UpdatePosTask extends BasicTask{
     private double dt;
 
-    public UpdatePosTask(List<Body> bodies, double dt, int start, int finish, Barrier barrier){
-        super(bodies, barrier, start, finish);
+    public UpdatePosTask(List<Body> bodies, double dt, int start, int finish){
+        super(bodies, start, finish);
         this.dt = dt;
     }
 

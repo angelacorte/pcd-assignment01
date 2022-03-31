@@ -2,20 +2,20 @@ package conc.model.task;
 
 import conc.model.Body;
 import conc.model.V2d;
-import conc.model.monitor.Barrier;
 
 import java.util.List;
 
 public final class ComputeAndUpdateVelocityTask extends BasicTask{
     private double dt;
     
-    public ComputeAndUpdateVelocityTask(List<Body> bodies, double dt, int start, int finish, Barrier barrier ){
-        super(bodies, barrier, start, finish);
+    public ComputeAndUpdateVelocityTask(List<Body> bodies, double dt, int start, int finish){
+        super(bodies, start, finish);
         this.dt = dt;
     }
 
     @Override
     public void computeList(List<Body> bodies, int start, int finish) {
+
         for(int i = start; i < finish; i++){
             Body b = bodies.get(i);
             /* compute total force on bodies */
