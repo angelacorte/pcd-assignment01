@@ -5,6 +5,7 @@ import conc.model.Boundary;
 import conc.model.monitor.Latch;
 import conc.model.monitor.LatchImpl;
 import conc.model.task.*;
+import conc.view.SimulationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  * A Master Agent that coordinates other {@link WorkerAgent}
  */
 public class MasterAgent extends Thread{
+    private final SimulationView view;
     private final TaskBag taskBag;
     private final List<WorkerAgent> workers;
     private final List<Body> bodies;
@@ -20,9 +22,9 @@ public class MasterAgent extends Thread{
     private final long nSteps;
     private final int nWorkers;
     private final Latch latch;
-    private double dt;
 
-    public MasterAgent(List<Body> bodies, Boundary boundary, final long nSteps, int nWorkers){
+    public MasterAgent(SimulationView view, List<Body> bodies, Boundary boundary, final long nSteps, int nWorkers){
+        this.view = view;
         this.bodies = bodies;
         this.boundary = boundary;
         this.taskBag = new TaskBagWithLinkedList();
@@ -72,6 +74,7 @@ public class MasterAgent extends Thread{
             /* update virtual time */
             vt = vt + dt;
             iter++;
+            view.display(bodies, vt, iter, boundary);
             log("Iteration " + iter + " completed");
         }
 

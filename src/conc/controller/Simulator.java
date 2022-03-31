@@ -6,6 +6,7 @@ import conc.model.Boundary;
 import conc.model.P2d;
 import conc.model.V2d;
 import conc.model.agent.MasterAgent;
+import conc.view.SimulationView;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -33,8 +34,9 @@ public class Simulator {
 	}
 	
 	public void execute(long nSteps) {
+		SimulationView viewer = new SimulationView(620,620);
 		int nWorkers = Runtime.getRuntime().availableProcessors()+1;
-		MasterAgent master = new MasterAgent(getBodies(), getBounds(), nSteps , nWorkers);
+		MasterAgent master = new MasterAgent(viewer, getBodies(), getBounds(), nSteps , nWorkers);
 		master.start();
 	}
 

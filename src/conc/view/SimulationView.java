@@ -13,6 +13,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Simulation view
@@ -22,25 +23,25 @@ import java.util.ArrayList;
  */
 public class SimulationView {
         
-	private VisualiserFrame frame;
+	private final VisualiserFrame frame;
 	
     /**
      * Creates a view of the specified size (in pixels)
      * 
-     * @param w
-     * @param h
+     * @param w width.
+     * @param h height.
      */
     public SimulationView(int w, int h){
     	frame = new VisualiserFrame(w,h);
     }
         
-    public void display(ArrayList<Body> bodies, double vt, long iter, Boundary bounds){
+    public void display(List<Body> bodies, double vt, long iter, Boundary bounds){
  	   frame.display(bodies, vt, iter, bounds); 
     }
     
     public static class VisualiserFrame extends JFrame {
 
-        private VisualiserPanel panel;
+        private final VisualiserPanel panel;
 
         public VisualiserFrame(int w, int h){
             setTitle("Bodies Simulation");
@@ -59,14 +60,14 @@ public class SimulationView {
     		this.setVisible(true);
         }
         
-        public void display(ArrayList<Body> bodies, double vt, long iter, Boundary bounds){
+        public void display(List<Body> bodies, double vt, long iter, Boundary bounds){
         	try {
 	        	SwingUtilities.invokeAndWait(() -> { //aspetta che abbia terminato
 	        		panel.display(bodies, vt, iter, bounds);
 	            	repaint();
 	        	});
-        	} catch (Exception ex) {}
-        };
+        	} catch (Exception ex) {ex.printStackTrace();}
+        }
         
         public void updateScale(double k) {
         	panel.updateScale(k);
@@ -75,15 +76,15 @@ public class SimulationView {
 
     public static class VisualiserPanel extends JPanel implements KeyListener {
         
-    	private ArrayList<Body> bodies;
+    	private List<Body> bodies;
     	private Boundary bounds;
     	
     	private long nIter;
     	private double vt;
     	private double scale = 1;
     	
-        private long dx;
-        private long dy;
+        private final long dx;
+        private final long dy;
         
         public VisualiserPanel(int w, int h){
             setSize(w,h);
@@ -135,7 +136,7 @@ public class SimulationView {
         	return (int)(dy - y*dy*scale);
         }
         
-        public void display(ArrayList<Body> bodies, double vt, long iter, Boundary bounds){
+        public void display(List<Body> bodies, double vt, long iter, Boundary bounds){
             this.bodies = bodies;
             this.bounds = bounds;
             this.vt = vt;
