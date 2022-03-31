@@ -17,11 +17,12 @@ public class MasterAgent extends Thread{
     private final List<WorkerAgent> workers;
     private final List<Body> bodies;
     private final Boundary boundary;
-    private final int nSteps, nWorkers;
+    private final long nSteps;
+    private final int nWorkers;
     private Barrier barrier;
     private double dt, vt;
 
-    public MasterAgent(List<Body> bodies, Boundary boundary, final int nSteps, int nWorkers){
+    public MasterAgent(List<Body> bodies, Boundary boundary, final long nSteps, int nWorkers){
         this.bodies = bodies;
         this.boundary = boundary;
         this.taskBag = new TaskBagWithLinkedList();
@@ -33,7 +34,6 @@ public class MasterAgent extends Thread{
 
     @Override
     public void run(){
-        System.out.println("run master agent");
         vt = 0;
         dt = 0.001;
         long iter = 0;
@@ -41,29 +41,38 @@ public class MasterAgent extends Thread{
         for(int i = 0; i < nWorkers; i++){
             WorkerAgent worker = new WorkerAgent(taskBag, barrier);
             workers.add(worker);
+        }
+
+        for(WorkerAgent worker : workers){
             worker.start();
         }
 
         while(iter < nSteps){
 
+            log("Assigning work");
+
             for(int i = 0; i < nTasks; i++){
-                taskBag.addTask(new ComputeAndUpdateVelocityTask(bodies, dt, i*nTasks, i*nTasks+nTasks));
+                taskBag.addTask(new ComputeAndUpdateVelocityTask(bodies, dt, i*nTasks, i*nTasks+nTasks, barrier));
             }
 
             waitBarrier();
 
             barrier = new BarrierImpl(nWorkers+1);
 
+            log("Assigning work");
+
             for(int i = 0; i < nTasks; i++){
-                taskBag.addTask(new UpdatePosTask(bodies, dt, i*nTasks, i*nTasks+nTasks));
+                taskBag.addTask(new UpdatePosTask(bodies, dt, i*nTasks, i*nTasks+nTasks, barrier));
             }
 
             waitBarrier();
 
             barrier = new BarrierImpl(nWorkers+1);
 
+            log("Assigning work");
+
             for(int i = 0; i < nTasks; i++){
-                taskBag.addTask(new CheckBoundaryTask(bodies, boundary, i*nTasks, i*nTasks+nTasks));
+                taskBag.addTask(new CheckBoundaryTask(bodies, boundary, i*nTasks, i*nTasks+nTasks, barrier));
             }
 
             waitBarrier();
@@ -79,6 +88,12 @@ public class MasterAgent extends Thread{
             barrier.hitAndWaitAll();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void log(String msg) {
+        synchronized(System.out) {
+            System.out.println("[ "+getName()+" ] "+msg);
         }
     }
 }

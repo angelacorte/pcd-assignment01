@@ -2,6 +2,7 @@ package conc.model.task;
 
 import conc.model.Body;
 import conc.model.V2d;
+import conc.model.monitor.Barrier;
 
 import java.util.List;
 
@@ -9,12 +10,14 @@ public final class ComputeAndUpdateVelocityTask implements Task{
     private final List<Body> bodies;
     private double dt;
     private int start, finish;
+    private Barrier barrier;
     
-    public ComputeAndUpdateVelocityTask(List<Body> bodies, double dt, int start, int finish){
+    public ComputeAndUpdateVelocityTask(List<Body> bodies, double dt, int start, int finish, Barrier barrier ){
         this.bodies = bodies;
         this.dt = dt;
         this.start = start;
         this.finish = finish;
+        this.barrier = barrier;
     }
 
     @Override
@@ -29,6 +32,11 @@ public final class ComputeAndUpdateVelocityTask implements Task{
 
             /* update velocity */
             b.updateVelocity(acc, dt);
+        }
+        try {
+            barrier.hitAndWaitAll();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
