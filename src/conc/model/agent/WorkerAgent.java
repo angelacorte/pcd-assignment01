@@ -26,15 +26,11 @@ public class WorkerAgent extends Thread{
 
     @Override
     public void run(){
-        log("Running...");
         while(!stopped){
-            log("Waiting for task");
             Task task = tasks.nextTask();
-            log("Executing "+task.getName());
             task.executeWork();
             latch.notifyCompletion();
         }
-        log("Terminating...");
     }
 
     private void log(String msg) {

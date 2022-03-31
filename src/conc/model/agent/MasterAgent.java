@@ -40,32 +40,25 @@ public class MasterAgent extends Thread{
         double dt = 0.001;
         long iter = 0;
 
-        for(int i = 0; i < nWorkers-1; i++){
+        for(int i = 0; i < nWorkers; i++){
             WorkerAgent worker = new WorkerAgent(taskBag, latch);
             workers.add(worker);
             worker.start();
         }
 
-        WorkerAgent worker = new WorkerAgent(taskBag, latch);
-        worker.start();
+        long startTime = System.nanoTime();
+
+        log("Simulation started...");
 
         while(iter < nSteps){
-            latch.reset();
-            taskBag.clearBag();
-
-            log("Assigning work...");
 
             bodies.forEach(b -> taskBag.addTask(new ComputeAndUpdateVelocityTask(bodies, b, dt)));
 
             waitLatch();
 
-            log("Assigning work...");
-
             bodies.forEach(b -> taskBag.addTask(new UpdatePosTask(bodies, b, dt)));
 
             waitLatch();
-
-            log("Assigning work...");
 
             bodies.forEach(b -> taskBag.addTask(new CheckBoundaryTask(bodies, b, boundary)));
 
@@ -77,15 +70,18 @@ public class MasterAgent extends Thread{
             view.display(bodies, vt, iter, boundary);
             log("Iteration " + iter + " completed");
         }
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime)/1000000;
 
         workers.forEach(WorkerAgent::stopWorker);
-        log("Ended simulation after " + iter + " iterations");
+        log("Ended simulation after " + iter + " iterations and " + duration + "ms");
     }
 
     private void waitLatch(){
         try {
             latch.waitCompletion();
             latch.reset();
+            taskBag.clearBag();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

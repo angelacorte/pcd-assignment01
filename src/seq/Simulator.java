@@ -42,8 +42,7 @@ public class Simulator {
 		while (iter < nSteps) {
 
 			/* update bodies velocity */
-			for (int i = 0; i < bodies.size(); i++) {
-				Body b = bodies.get(i);
+			for (Body b : bodies) {
 				/* compute total force on bodies */
 				V2d totalForce = computeTotalForceOnBody(b);
 				/* compute instant acceleration */
@@ -75,8 +74,7 @@ public class Simulator {
 		V2d totalForce = new V2d(0, 0);
 
 		/* compute total repulsive force */
-		for (int j = 0; j < bodies.size(); j++) {
-			Body otherBody = bodies.get(j);
+		for (Body otherBody : bodies) {
 			if (!b.equals(otherBody)) {
 				try {
 					V2d forceByOtherBody = b.computeRepulsiveForceBy(otherBody);
