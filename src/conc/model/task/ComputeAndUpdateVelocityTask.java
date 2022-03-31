@@ -6,28 +6,28 @@ import conc.model.V2d;
 import java.util.List;
 
 public final class ComputeAndUpdateVelocityTask extends BasicTask{
-    private double dt;
+    private static final String TASK_NAME = "Compute and update velocity Task";
+    private final double dt;
     
-    public ComputeAndUpdateVelocityTask(List<Body> bodies, double dt, int start, int finish){
-        super(bodies, start, finish);
+    public ComputeAndUpdateVelocityTask(List<Body> bodies, Body subject, double dt){
+        super(bodies, subject);
         this.dt = dt;
     }
 
     @Override
-    public void computeList(List<Body> bodies, int start, int finish) {
+    public void computeTask(List<Body> bodies, Body subject) {
+        /* compute total force on bodies */
+        V2d totalForce = computeTotalForceOnBody(subject);
 
-        for(int i = start; i < finish; i++){
-            Body b = bodies.get(i);
-            /* compute total force on bodies */
-            V2d totalForce = computeTotalForceOnBody(b);
+        /* compute instant acceleration */
+        V2d acc = new V2d(totalForce).scalarMul(1.0 / subject.getMass());
 
-            /* compute instant acceleration */
-            V2d acc = new V2d(totalForce).scalarMul(1.0 / b.getMass());
-
-            /* update velocity */
-            b.updateVelocity(acc, dt);
-        }
+        /* update velocity */
+        subject.updateVelocity(acc, dt);
     }
+
+    @Override
+    public String getName(){return TASK_NAME;}
 
     private V2d computeTotalForceOnBody(Body b) {
 
@@ -37,13 +37,13 @@ public final class ComputeAndUpdateVelocityTask extends BasicTask{
 
         List<Body> bodies = getBodies();
 
-        for (int j = 0; j < bodies.size(); j++) {
-            Body otherBody = bodies.get(j);
+        for (Body otherBody : bodies) {
             if (!b.equals(otherBody)) {
                 try {
                     V2d forceByOtherBody = b.computeRepulsiveForceBy(otherBody);
                     totalForce.sum(forceByOtherBody);
                 } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             }
         }

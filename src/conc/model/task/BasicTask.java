@@ -1,29 +1,28 @@
 package conc.model.task;
 
 import conc.model.Body;
-import conc.model.monitor.Barrier;
 
 import java.util.List;
 
 public abstract class BasicTask implements Task{
     private final List<Body> bodies;
-    private final int start;
-    private final int finish;
+    private final Body subject;
 
-    public BasicTask(List<Body> bodies, int start, int finish) {
+    public BasicTask(List<Body> bodies, Body subject) {
         this.bodies = bodies;
-        this.start = start;
-        this.finish = finish;
+        this.subject = subject;
     }
 
     @Override
     public void executeWork() {
-        computeList(bodies, start, finish);
+        computeTask(bodies, subject);
     }
 
-    abstract protected void computeList(List<Body> bodies, int start, int finish);
+    abstract protected void computeTask(List<Body> bodies, Body subject);
 
     public List<Body> getBodies() {
         return bodies;
     }
+
+    public Body getSubject(){return subject;}
 }

@@ -6,18 +6,19 @@ import conc.model.monitor.Barrier;
 import java.util.List;
 
 public final class UpdatePosTask extends BasicTask{
-    private double dt;
+    private static final String TASK_NAME = "Update position Task";
+    private final double dt;
 
-    public UpdatePosTask(List<Body> bodies, double dt, int start, int finish){
-        super(bodies, start, finish);
+    public UpdatePosTask(List<Body> bodies, Body subject, double dt){
+        super(bodies, subject);
         this.dt = dt;
     }
 
     @Override
-    public void computeList(List<Body> bodies, int start, int finish) {
-        for(int i = start; i < finish; i++){
-            Body b = bodies.get(i);
-            b.updatePos(dt);
-        }
+    public void computeTask(List<Body> bodies, Body subject) {
+        subject.updatePos(dt);
     }
+
+    @Override
+    public String getName(){return TASK_NAME;}
 }
