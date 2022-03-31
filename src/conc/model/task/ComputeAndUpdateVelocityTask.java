@@ -6,22 +6,16 @@ import conc.model.monitor.Barrier;
 
 import java.util.List;
 
-public final class ComputeAndUpdateVelocityTask implements Task{
-    private final List<Body> bodies;
+public final class ComputeAndUpdateVelocityTask extends BasicTask{
     private double dt;
-    private int start, finish;
-    private Barrier barrier;
     
     public ComputeAndUpdateVelocityTask(List<Body> bodies, double dt, int start, int finish, Barrier barrier ){
-        this.bodies = bodies;
+        super(bodies, barrier, start, finish);
         this.dt = dt;
-        this.start = start;
-        this.finish = finish;
-        this.barrier = barrier;
     }
 
     @Override
-    public void executeWork() {
+    public void computeList(List<Body> bodies, int start, int finish) {
         for(int i = start; i < finish; i++){
             Body b = bodies.get(i);
             /* compute total force on bodies */
@@ -33,11 +27,6 @@ public final class ComputeAndUpdateVelocityTask implements Task{
             /* update velocity */
             b.updateVelocity(acc, dt);
         }
-        try {
-            barrier.hitAndWaitAll();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     private V2d computeTotalForceOnBody(Body b) {
@@ -45,6 +34,8 @@ public final class ComputeAndUpdateVelocityTask implements Task{
         V2d totalForce = new V2d(0, 0);
 
         /* compute total repulsive force */
+
+        List<Body> bodies = getBodies();
 
         for (int j = 0; j < bodies.size(); j++) {
             Body otherBody = bodies.get(j);
