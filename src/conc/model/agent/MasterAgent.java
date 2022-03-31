@@ -29,7 +29,7 @@ public class MasterAgent extends Thread{
         this.boundary = boundary;
         this.taskBag = new TaskBagWithLinkedList();
         this.workers = new ArrayList<>();
-        this.latch = new LatchImpl(nWorkers);
+        this.latch = new LatchImpl(bodies.size());
         this.nSteps = nSteps;
         this.nWorkers = nWorkers;
     }

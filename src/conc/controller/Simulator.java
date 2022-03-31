@@ -12,31 +12,23 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Simulator {
-
 	/* bodies in the field */
 	ArrayList<Body> bodies;
 
 	/* boundary of the field */
 	private Boundary bounds;
 
-	/* virtual time */
-	private double vt;
-
-	/* virtual time step */
-	double dt;
-
 	public Simulator() {
 //		testBodySet1_two_bodies();
 //		testBodySet2_three_bodies();
 		testBodySet3_some_bodies();
 //		testBodySet4_many_bodies();
-
 	}
 	
 	public void execute(long nSteps) {
 		SimulationView viewer = new SimulationView(620,620);
 		int nWorkers = Runtime.getRuntime().availableProcessors()+1;
-		MasterAgent master = new MasterAgent(viewer, getBodies(), getBounds(), nSteps , nWorkers);
+		MasterAgent master = new MasterAgent(viewer, bodies, bounds, nSteps , nWorkers);
 		master.start();
 	}
 
@@ -79,13 +71,5 @@ public class Simulator {
 			Body b = new Body(i, new P2d(x, y), new V2d(0, 0), 10);
 			bodies.add(b);
 		}
-	}
-
-	public Boundary getBounds() {
-		return bounds;
-	}
-
-	public ArrayList<Body> getBodies() {
-		return bodies;
 	}
 }
