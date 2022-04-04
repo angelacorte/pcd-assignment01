@@ -1,6 +1,6 @@
-target = seq.SequentialBodySimulationMain
+target = conc.controller.ConcurrentBodySimulationMain
 
-classpath = src/seq/SequentialBodySimulationMain.java
+classpath = out/production/pcd-assignment01
 
 listener = gov.nasa.jpf.listener.PreciseRaceDetector
 
