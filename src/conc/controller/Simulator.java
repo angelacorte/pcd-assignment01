@@ -27,8 +27,8 @@ public class Simulator {
 	}
 	
 	public void execute() {
-		SimulationView viewer = new SimulationView(620,620);
-		MasterAgent master = new MasterAgent(viewer, bodies, bounds, nSteps , nWorkers);
+		//SimulationView viewer = new SimulationView(620,620);
+		MasterAgent master = new MasterAgent(/*viewer,*/ bodies, bounds, nSteps , nWorkers);
 		master.start();
 	}
 

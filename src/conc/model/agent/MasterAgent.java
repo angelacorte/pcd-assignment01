@@ -7,14 +7,16 @@ import conc.model.monitor.LatchImpl;
 import conc.model.task.*;
 import conc.view.SimulationView;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
  * A Master Agent that coordinates other {@link WorkerAgent}
  */
 public class MasterAgent extends Thread{
-    private final SimulationView view;
+//    private final SimulationView view;
     private final TaskBag taskBag;
     private final List<WorkerAgent> workers;
     private final List<Body> bodies;
@@ -23,8 +25,8 @@ public class MasterAgent extends Thread{
     private final int nWorkers;
     private final Latch latch;
 
-    public MasterAgent(SimulationView view, List<Body> bodies, Boundary boundary, final long nSteps, int nWorkers){
-        this.view = view;
+    public MasterAgent(/*SimulationView view,*/ List<Body> bodies, Boundary boundary, final long nSteps, int nWorkers){
+//        this.view = view;
         this.bodies = bodies;
         this.boundary = boundary;
         this.taskBag = new TaskBagWithLinkedList();
@@ -48,7 +50,7 @@ public class MasterAgent extends Thread{
 
         long startTime = System.nanoTime();
 
-        log("Simulation started...");
+        //log("Simulation started...");
 
         while(iter < nSteps){
 
@@ -67,14 +69,14 @@ public class MasterAgent extends Thread{
             /* update virtual time */
             vt = vt + dt;
             iter++;
-            view.display(bodies, vt, iter, boundary);
-            log("Iteration " + iter + " completed");
+//            view.display(bodies, vt, iter, boundary);
+            //log("Iteration " + iter + " completed");
         }
         long endTime = System.nanoTime();
         long duration = (endTime - startTime)/1000000;
-
         workers.forEach(WorkerAgent::stopWorker);
-        log("Ended simulation after " + iter + " iterations and " + duration + "ms");
+        System.out.println("SIMULATION ENDED \n #ITERATIONS = " + iter + "\n DURATION = " + duration + "ms");
+        //System.exit(0);
     }
 
     private void waitLatch(){
