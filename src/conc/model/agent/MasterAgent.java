@@ -54,19 +54,27 @@ public class MasterAgent extends Thread{
 
         while(iter < nSteps){
 
-            bodies.forEach(b -> taskBag.addTask(new ComputeAndUpdateVelocityTask(bodies, b, dt)));
+            //bodies.forEach(b -> taskBag.addTask(new ComputeAndUpdateVelocityTask(bodies, b, dt)));
+            for(int i=0; i<bodies.size(); i++){
+                Body b = bodies.get(i);
+                taskBag.addTask(new ComputeAndUpdateVelocityTask(bodies, b, dt));
+            }
+            waitLatch();
+
+            for(int i=0; i<bodies.size(); i++){
+                Body b = bodies.get(i);
+                taskBag.addTask(new UpdatePosTask(bodies, b, dt));
+            }
 
             waitLatch();
 
-            bodies.forEach(b -> taskBag.addTask(new UpdatePosTask(bodies, b, dt)));
+            for(int i=0; i<bodies.size(); i++){
+                Body b = bodies.get(i);
+                taskBag.addTask(new CheckBoundaryTask(bodies, b, boundary));
+            }
 
             waitLatch();
 
-            bodies.forEach(b -> taskBag.addTask(new CheckBoundaryTask(bodies, b, boundary)));
-
-            waitLatch();
-
-            /* update virtual time */
             vt = vt + dt;
             iter++;
 //            view.display(bodies, vt, iter, boundary);
@@ -74,9 +82,14 @@ public class MasterAgent extends Thread{
         }
         long endTime = System.nanoTime();
         long duration = (endTime - startTime)/1000000;
-        workers.forEach(WorkerAgent::stopWorker);
+
+        for(int i=0; i<workers.size(); i++){
+            WorkerAgent w = workers.get(i);
+            //w.stopWorker();
+            w.stop();
+        }
         System.out.println("SIMULATION ENDED \n #ITERATIONS = " + iter + "\n DURATION = " + duration + "ms");
-        //System.exit(0);
+        System.exit(0);
     }
 
     private void waitLatch(){

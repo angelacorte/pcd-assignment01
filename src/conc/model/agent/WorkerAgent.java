@@ -9,7 +9,7 @@ import conc.model.task.TaskBag;
  * A simple, generalist worker agent that executes generic tasks
  */
 public class WorkerAgent extends Thread{
-    private boolean stopped;
+    private volatile boolean stopped;
     private final TaskBag tasks;
     private final Latch latch;
 
@@ -39,7 +39,7 @@ public class WorkerAgent extends Thread{
         }
     }
 
-    public void stopWorker(){
+    public synchronized void stopWorker(){
         this.stopped = true;
     }
 }
