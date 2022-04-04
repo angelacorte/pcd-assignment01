@@ -16,7 +16,7 @@ import java.util.List;
  * A Master Agent that coordinates other {@link WorkerAgent}
  */
 public class MasterAgent extends Thread{
-//    private final SimulationView view;
+    private final SimulationView view;
     private final TaskBag taskBag;
     private final List<WorkerAgent> workers;
     private final List<Body> bodies;
@@ -25,8 +25,8 @@ public class MasterAgent extends Thread{
     private final int nWorkers;
     private final Latch latch;
 
-    public MasterAgent(/*SimulationView view,*/ List<Body> bodies, Boundary boundary, final long nSteps, int nWorkers){
-//        this.view = view;
+    public MasterAgent(SimulationView view, List<Body> bodies, Boundary boundary, final long nSteps, int nWorkers){
+        this.view = view;
         this.bodies = bodies;
         this.boundary = boundary;
         this.taskBag = new TaskBagWithLinkedList();
@@ -50,46 +50,31 @@ public class MasterAgent extends Thread{
 
         long startTime = System.nanoTime();
 
-        //log("Simulation started...");
+        log("Simulation started...");
 
         while(iter < nSteps){
 
-            //bodies.forEach(b -> taskBag.addTask(new ComputeAndUpdateVelocityTask(bodies, b, dt)));
-            for(int i=0; i<bodies.size(); i++){
-                Body b = bodies.get(i);
-                taskBag.addTask(new ComputeAndUpdateVelocityTask(bodies, b, dt));
-            }
-            waitLatch();
-
-            for(int i=0; i<bodies.size(); i++){
-                Body b = bodies.get(i);
-                taskBag.addTask(new UpdatePosTask(bodies, b, dt));
-            }
+            bodies.forEach(b -> taskBag.addTask(new ComputeAndUpdateVelocityTask(bodies, b, dt)));
 
             waitLatch();
 
-            for(int i=0; i<bodies.size(); i++){
-                Body b = bodies.get(i);
-                taskBag.addTask(new CheckBoundaryTask(bodies, b, boundary));
-            }
+            bodies.forEach(b -> taskBag.addTask(new UpdatePosTask(bodies, b, dt)));
+
+            waitLatch();
+
+            bodies.forEach(b -> taskBag.addTask(new CheckBoundaryTask(bodies, b, boundary)));
 
             waitLatch();
 
             vt = vt + dt;
             iter++;
-//            view.display(bodies, vt, iter, boundary);
-            //log("Iteration " + iter + " completed");
+            view.display(bodies, vt, iter, boundary);
         }
         long endTime = System.nanoTime();
         long duration = (endTime - startTime)/1000000;
 
-        for(int i=0; i<workers.size(); i++){
-            WorkerAgent w = workers.get(i);
-            //w.stopWorker();
-            w.stop();
-        }
-        System.out.println("SIMULATION ENDED \n #ITERATIONS = " + iter + "\n DURATION = " + duration + "ms");
-        System.exit(0);
+        workers.forEach(Thread::stop);
+        log("SIMULATION ENDED \n #ITERATIONS = " + iter + "\n DURATION = " + duration + "ms");
     }
 
     private void waitLatch(){
