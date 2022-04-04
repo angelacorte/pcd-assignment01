@@ -5,8 +5,6 @@ import conc.model.Boundary;
 import conc.model.P2d;
 import conc.model.V2d;
 import conc.model.agent.MasterAgent;
-import conc.view.SimulationView;
-
 import java.util.ArrayList;
 import java.util.Random;
 

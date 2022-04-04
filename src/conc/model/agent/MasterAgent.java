@@ -5,11 +5,7 @@ import conc.model.Boundary;
 import conc.model.monitor.Latch;
 import conc.model.monitor.LatchImpl;
 import conc.model.task.*;
-import conc.view.SimulationView;
-
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
