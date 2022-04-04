@@ -5,18 +5,13 @@ import conc.model.Boundary;
 import conc.model.monitor.Latch;
 import conc.model.monitor.LatchImpl;
 import conc.model.task.*;
-import conc.view.SimulationView;
-
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
  * A Master Agent that coordinates other {@link WorkerAgent}
  */
 public class MasterAgent extends Thread{
-//    private final SimulationView view;
     private final TaskBag taskBag;
     private final List<WorkerAgent> workers;
     private final List<Body> bodies;
@@ -25,8 +20,7 @@ public class MasterAgent extends Thread{
     private final int nWorkers;
     private final Latch latch;
 
-    public MasterAgent(/*SimulationView view,*/ List<Body> bodies, Boundary boundary, final long nSteps, int nWorkers){
-//        this.view = view;
+    public MasterAgent(List<Body> bodies, Boundary boundary, final long nSteps, int nWorkers){
         this.bodies = bodies;
         this.boundary = boundary;
         this.taskBag = new TaskBagWithLinkedList();
@@ -47,14 +41,7 @@ public class MasterAgent extends Thread{
             workers.add(worker);
             worker.start();
         }
-
-        long startTime = System.nanoTime();
-
-        //log("Simulation started...");
-
         while(iter < nSteps){
-
-            //bodies.forEach(b -> taskBag.addTask(new ComputeAndUpdateVelocityTask(bodies, b, dt)));
             for(int i=0; i<bodies.size(); i++){
                 Body b = bodies.get(i);
                 taskBag.addTask(new ComputeAndUpdateVelocityTask(bodies, b, dt));
@@ -65,30 +52,21 @@ public class MasterAgent extends Thread{
                 Body b = bodies.get(i);
                 taskBag.addTask(new UpdatePosTask(bodies, b, dt));
             }
-
             waitLatch();
 
             for(int i=0; i<bodies.size(); i++){
                 Body b = bodies.get(i);
                 taskBag.addTask(new CheckBoundaryTask(bodies, b, boundary));
             }
-
             waitLatch();
 
             vt = vt + dt;
             iter++;
-//            view.display(bodies, vt, iter, boundary);
-            //log("Iteration " + iter + " completed");
         }
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime)/1000000;
-
         for(int i=0; i<workers.size(); i++){
             WorkerAgent w = workers.get(i);
-            //w.stopWorker();
             w.stop();
         }
-        System.out.println("SIMULATION ENDED \n #ITERATIONS = " + iter + "\n DURATION = " + duration + "ms");
         System.exit(0);
     }
 
@@ -99,12 +77,6 @@ public class MasterAgent extends Thread{
             taskBag.clearBag();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void log(String msg) {
-        synchronized(System.out) {
-            System.out.println("[ "+getName()+" ] "+msg);
         }
     }
 }

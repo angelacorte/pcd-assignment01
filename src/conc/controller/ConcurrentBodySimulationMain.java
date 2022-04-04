@@ -12,7 +12,6 @@ public class ConcurrentBodySimulationMain {
             nSteps = Integer.parseInt(args[1]);
             nWorkers = Integer.parseInt(args[2]);
         }
-        System.out.println("SIMULATION STARTED \n #BODIES = " + nBodies + "\n #STEPS = " + nSteps + "\n #WORKERS = " + nWorkers);
         Simulator sim = new Simulator(nBodies, nSteps, nWorkers);
         sim.execute();
     }
