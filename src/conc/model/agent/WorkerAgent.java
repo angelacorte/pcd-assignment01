@@ -9,7 +9,6 @@ import conc.model.task.TaskBag;
  * A simple, generalist worker agent that executes generic tasks
  */
 public class WorkerAgent extends Thread{
-    private volatile boolean stopped;
     private final TaskBag tasks;
     private final Latch latch;
 
@@ -19,27 +18,16 @@ public class WorkerAgent extends Thread{
      * @param latch A {@link Latch} used for coordination.
      */
     public WorkerAgent(TaskBag tasks, Latch latch){
-        this.stopped = false;
         this.tasks = tasks;
         this.latch = latch;
     }
 
     @Override
     public void run(){
-        while(!stopped){
+        while(true){
             Task task = tasks.nextTask();
             task.executeWork();
             latch.notifyCompletion();
         }
-    }
-
-    private void log(String msg) {
-        synchronized(System.out) {
-            System.out.println("[ "+getName()+" ] "+msg);
-        }
-    }
-
-    public synchronized void stopWorker(){
-        this.stopped = true;
     }
 }
