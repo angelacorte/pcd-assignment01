@@ -1,7 +1,6 @@
 package conc.model.task;
 
 import conc.model.Body;
-import conc.model.monitor.Barrier;
 
 import java.util.List;
 

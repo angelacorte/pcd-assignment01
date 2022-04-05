@@ -1,6 +1,5 @@
 package conc.model.agent;
 
-import conc.model.monitor.Barrier;
 import conc.model.monitor.Latch;
 import conc.model.task.Task;
 import conc.model.task.TaskBag;
