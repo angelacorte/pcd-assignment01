@@ -2,14 +2,11 @@ package conc.model.agent;
 
 import conc.model.Body;
 import conc.model.Boundary;
-import conc.model.monitor.Latch;
-import conc.model.monitor.LatchImpl;
+import conc.model.monitor.*;
 import conc.model.task.*;
 import conc.view.SimulationView;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,8 +21,11 @@ public class MasterAgent extends Thread{
     private final long nSteps;
     private final int nWorkers;
     private final Latch latch;
+    private final StartSync sync;
+    private final StopFlag flag;
 
-    public MasterAgent(SimulationView view, List<Body> bodies, Boundary boundary, final long nSteps, int nWorkers){
+    public MasterAgent(SimulationView view, List<Body> bodies, Boundary boundary, final long nSteps, int nWorkers, StartSync sync,
+                       StopFlag flag){
         this.view = view;
         this.bodies = bodies;
         this.boundary = boundary;
@@ -34,6 +34,8 @@ public class MasterAgent extends Thread{
         this.latch = new LatchImpl(bodies.size());
         this.nSteps = nSteps;
         this.nWorkers = nWorkers;
+        this.sync = sync;
+        this.flag = flag;
     }
 
     @Override
@@ -48,9 +50,7 @@ public class MasterAgent extends Thread{
             worker.start();
         }
 
-        long startTime = System.nanoTime();
-
-        log("Simulation started...");
+        sync.waitStart();
 
         while(iter < nSteps){
 
@@ -68,13 +68,13 @@ public class MasterAgent extends Thread{
 
             vt = vt + dt;
             iter++;
-            view.display(bodies, vt, iter, boundary);
+
+            if(!flag.isSet()){
+                view.display(bodies, vt, iter, boundary);
+            }
         }
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime)/1000000;
 
         workers.forEach(Thread::stop);
-        log("SIMULATION ENDED \n #ITERATIONS = " + iter + "\n DURATION = " + duration + "ms");
     }
 
     private void waitLatch(){
@@ -87,9 +87,4 @@ public class MasterAgent extends Thread{
         }
     }
 
-    private void log(String msg) {
-        synchronized(System.out) {
-            System.out.println("[ "+getName()+" ] "+msg);
-        }
-    }
 }

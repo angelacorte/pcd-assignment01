@@ -4,6 +4,7 @@ package conc.view;
 
 import conc.model.Body;
 import conc.model.Boundary;
+import conc.model.InputListener;
 import conc.model.P2d;
 
 import javax.swing.*;
@@ -35,12 +36,14 @@ public class SimulationView {
     public void display(List<Body> bodies, double vt, long iter, Boundary bounds){
  	   frame.display(bodies, vt, iter, bounds); 
     }
+
+	public void registerListener(InputListener l){
+		frame.registerListener(l);
+	}
     
     public static class VisualiserFrame extends JFrame implements ActionListener {
-
         private final VisualiserPanel panel;
-		private JButton start = new JButton("start");
-		private JButton stop = new JButton("stop");
+		private final List<InputListener> listeners = new ArrayList<>();
 
 		public VisualiserFrame(int w, int h){
             setTitle("Bodies Simulation");
@@ -49,7 +52,9 @@ public class SimulationView {
 
             panel = new VisualiserPanel(w,h);
 			JPanel controlPanel = new JPanel();
+			JButton start = new JButton("start");
 			controlPanel.add(start);
+			JButton stop = new JButton("stop");
 			controlPanel.add(stop);
 			LayoutManager layout = new BorderLayout();
 			JPanel cp = new JPanel();
@@ -88,12 +93,22 @@ public class SimulationView {
 		public void actionPerformed(ActionEvent e) {
 			String cmd = e.getActionCommand();
 			if (cmd.equals("start")){
-				System.out.println("start pressed");
-				//notifyStarted();
+				notifyStarted();
 			} else if (cmd.equals("stop")){
-				System.out.println("stop pressed");
-				//notifyStopped();
+				notifyStopped();
 			}
+		}
+
+		public void registerListener(InputListener listener){
+			this.listeners.add(listener);
+		}
+
+		public void notifyStarted(){
+			listeners.forEach(InputListener::started);
+		}
+
+		public void notifyStopped(){
+			listeners.forEach(InputListener::stopped);
 		}
     }
 
