@@ -8,10 +8,7 @@ import conc.model.P2d;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,16 +36,30 @@ public class SimulationView {
  	   frame.display(bodies, vt, iter, bounds); 
     }
     
-    public static class VisualiserFrame extends JFrame {
+    public static class VisualiserFrame extends JFrame implements ActionListener {
 
         private final VisualiserPanel panel;
+		private JButton start = new JButton("start");
+		private JButton stop = new JButton("stop");
 
-        public VisualiserFrame(int w, int h){
+		public VisualiserFrame(int w, int h){
             setTitle("Bodies Simulation");
-            setSize(w,h);
+            setSize(w+100,h+100);
             setResizable(false);
+
             panel = new VisualiserPanel(w,h);
-            getContentPane().add(panel);
+			JPanel controlPanel = new JPanel();
+			controlPanel.add(start);
+			controlPanel.add(stop);
+			LayoutManager layout = new BorderLayout();
+			JPanel cp = new JPanel();
+			cp.setLayout(layout);
+			cp.add(BorderLayout.NORTH, controlPanel);
+			cp.add(BorderLayout.CENTER, panel);
+			setContentPane(cp);
+
+			start.addActionListener(this);
+			stop.addActionListener(this);
             addWindowListener(new WindowAdapter(){
     			public void windowClosing(WindowEvent ev){
     				System.exit(-1);
@@ -68,10 +79,22 @@ public class SimulationView {
 	        	});
         	} catch (Exception ex) {ex.printStackTrace();}
         }
-        
+
         public void updateScale(double k) {
         	panel.updateScale(k);
-        }    	
+        }
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String cmd = e.getActionCommand();
+			if (cmd.equals("start")){
+				System.out.println("start pressed");
+				//notifyStarted();
+			} else if (cmd.equals("stop")){
+				System.out.println("stop pressed");
+				//notifyStopped();
+			}
+		}
     }
 
     public static class VisualiserPanel extends JPanel implements KeyListener {
@@ -158,5 +181,5 @@ public class SimulationView {
 
 		public void keyReleased(KeyEvent e) {}
 		public void keyTyped(KeyEvent e) {}
-    }
+	}
 }

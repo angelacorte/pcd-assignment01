@@ -3,10 +3,10 @@ package conc.controller;
 public class ConcurrentBodySimulationMain {
 
     public static void main(String[] args) {
-        int nBodies = 2;
-        int nSteps = 2;
+        int nBodies = 1000;
+        int nSteps = 5000;
         //int nWorkers = Runtime.getRuntime().availableProcessors()+1;
-        int nWorkers = 2;
+        int nWorkers = 5;
         if(args.length > 0){
             nBodies = Integer.parseInt(args[0]);
             nSteps = Integer.parseInt(args[1]);
