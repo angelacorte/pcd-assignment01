@@ -6,6 +6,7 @@ import conc.model.monitor.Latch;
 import conc.model.monitor.LatchImpl;
 import conc.model.task.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -64,8 +65,8 @@ public class MasterAgent extends Thread{
         long duration = (endTime - startTime)/1000000;
 
         workers.forEach(Thread::stop);
-
-        System.out.println("SIMULATION ENDED \n #ITERATIONS = " + iter + "\n DURATION = " + duration + "ms\n=========================================");
+        String date = new Date().toLocaleString();
+        System.out.println("SIMULATION ENDED " + date + "\n DURATION = " + duration + "ms\n=========================================");
         System.exit(0);
     }
 
